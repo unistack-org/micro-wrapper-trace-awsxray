@@ -1,16 +1,15 @@
 package awsxray
 
 import (
+	"context"
 	"crypto/rand"
 	"fmt"
 	"strings"
 	"time"
 
-	"context"
-
 	"github.com/asim/go-awsxray"
-	"github.com/micro/go-micro/v2/errors"
-	"github.com/micro/go-micro/v2/metadata"
+	"github.com/unistack-org/micro/v3/errors"
+	"github.com/unistack-org/micro/v3/metadata"
 )
 
 // getHTTP returns a http struct

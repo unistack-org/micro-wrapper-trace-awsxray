@@ -3,10 +3,10 @@ package awsxray
 
 import (
 	"context"
+
 	"github.com/asim/go-awsxray"
-	"github.com/micro/go-micro/v2/client"
-	"github.com/micro/go-micro/v2/registry"
-	"github.com/micro/go-micro/v2/server"
+	"github.com/unistack-org/micro/v3/client"
+	"github.com/unistack-org/micro/v3/server"
 )
 
 type xrayWrapper struct {
@@ -43,17 +43,17 @@ func NewCallWrapper(opts ...Option) client.CallWrapper {
 	x := newXRay(options)
 
 	return func(cf client.CallFunc) client.CallFunc {
-		return func(ctx context.Context, node *registry.Node, req client.Request, rsp interface{}, opts client.CallOptions) error {
+		return func(ctx context.Context, addr string, req client.Request, rsp interface{}, opts client.CallOptions) error {
 			var err error
 			s := getSegment(options.Name, ctx)
 
 			defer func() {
-				setCallStatus(s, node.Address, req.Endpoint(), err)
+				setCallStatus(s, addr, req.Endpoint(), err)
 				go record(x, s)
 			}()
 
 			ctx = newContext(ctx, s)
-			err = cf(ctx, node, req, rsp, opts)
+			err = cf(ctx, addr, req, rsp, opts)
 			return err
 		}
 	}
